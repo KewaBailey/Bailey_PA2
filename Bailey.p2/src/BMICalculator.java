@@ -1,42 +1,59 @@
 
-// import scanner class
+// Import scanner class
 import java.util.Scanner;
 
-// create BMICalculator public class
+// Create BMICalculator public class
 public class BMICalculator {
-	// create a boolean called metric and create variables 
-	boolean metric = false;
+	/* Create a boolean called metric and create variables height and
+	   Weight as type int, bmi as float and a string (cat).
+	 */
+
 	int weight, height; 
 	float bmi;
 	String cat;
-	
+	boolean invalidInput = false; 
+	boolean shouldUseImperial;
+	// Takes the readUnitType and readMeasurementData method 
 	public void readUserData() {
-
+		
 		readUnitType();
-		readMeasurementData();
+		readMeasurementData(shouldUseImperial);
 	}
 
 	private void readUnitType() {
-		boolean vaild = true;
+		//Create a boolean for this method that is used in the if statement below
+
+		/*Do while loop with print statement for user letter input I for Imperial
+		or M for Metric */
 		do{
-			
 			System.out.println("Choose either Imperial or Metric calculator. I for Imperial M for Metric");
 			Scanner sc = new Scanner(System.in);
 			String iorM = sc.nextLine();
-			if(iorM.compareTo("M") == 0 || iorM.compareTo("I") == 0) {
-				vaild = false;
-				
-			}
-			metric = ("M" == iorM);
-			
-			
-		} while(vaild);
-		
-		
-		
-	}
 
-	private void readMeasurementData() {
+			if(iorM.compareToIgnoreCase("M") == 0) {
+				invalidInput = false;
+				shouldUseImperial = false;
+				//readMeasurementData(true);
+			}
+			else if(iorM.compareToIgnoreCase("I") == 0) {
+				invalidInput = false;
+				shouldUseImperial = true;
+				//readMeasurementData(false);
+				
+
+			}
+
+			else {
+				invalidInput = true;
+			
+			}
+		} while(invalidInput);
+
+	}
+	
+	// Takes the readMetricData and readImperialData methods
+	private void readMeasurementData(boolean metric) {
+		  
 		if(metric) { 
 			readMetricData();			
 		}
@@ -46,56 +63,97 @@ public class BMICalculator {
 	}
 
 	private void readMetricData() {
-		System.out.println("Enter height : ");
-		Scanner sc = new Scanner(System.in);
-		if(Integer.parseInt(sc.nextLine()) < 0) {
-			return;
-		}
-		setHeight(Integer.parseInt(sc.nextLine()));
-		System.out.println("Enter weight : ");
-		if(Integer.parseInt(sc.nextLine()) < 0) {
-			return;
-		}
-		setWeight(Integer.parseInt(sc.nextLine()));
+		//prompts user to enter height for metric 
+		do {
+			System.out.println("Enter height : ");
+			Scanner sc = new Scanner(System.in);
+			int userInput = Integer.parseInt(sc.nextLine());
+
+			if(userInput > 0) {
+				invalidInput = false;
+				 setHeight(userInput);
+				
+			}
+			else {
+				invalidInput = true;
+			}
+		}while(invalidInput);
+		//prompts user to enter weight for metric
+		do {
+			System.out.println("Enter weight : ");
+			Scanner sc = new Scanner(System.in);
+			int userInput = Integer.parseInt(sc.nextLine());
+			if(userInput > 0) {
+				invalidInput = false;
+				setWeight(userInput);
+				
+			}
+			else {
+				invalidInput = true;
+			}
+		}while(invalidInput);
 	}
+
+
 
 	private void readImperialData() {
-		System.out.println("Enter height : ");
-		Scanner sc = new Scanner(System.in);
-		if(Integer.parseInt(sc.nextLine()) < 0) {
-			return;
-		}
-		setHeight(Integer.parseInt(sc.nextLine()));
-		System.out.println("Enter weight : ");
-		if(Integer.parseInt(sc.nextLine()) < 0) {
-			return;
-		}
-		setWeight(Integer.parseInt(sc.nextLine()));		
+		do {
+			System.out.println("Enter height : ");
+			Scanner sc = new Scanner(System.in);
+			int userInput = Integer.parseInt(sc.nextLine());
+			
+			if(userInput > 0) {
+				invalidInput = false;
+				  setHeight(userInput);
+				
+			}
+			else {
+				invalidInput = true;
+			}
+		}while(invalidInput);
+		//prompts user to enter weight for metric
+		do {
+			System.out.println("Enter weight : ");
+			Scanner sc = new Scanner(System.in);
+			int userInput = Integer.parseInt(sc.nextLine());
+		
+			if(userInput > 0) {
+				invalidInput = false;
+				setWeight(userInput);
+				
+			}
+			else {
+				invalidInput = true;
+			}
+		}while(invalidInput);
 	}
 
-	public void calculateBmi() {
-
-		if (metric) {
-			bmi = (703 * getWeight())/(getHeight()^2);
-
+	public void calculateBmi() { 
+            
+		if(shouldUseImperial) {
+			bmi = getBmiMetric();
+			
 		}
 		else {
-			bmi = (getWeight())/(getHeight()^2);
+			bmi = getBmiImperial();
 		}
-
+		
 		calculateBmiCategory();
 	}
 
 
 	private void calculateBmiCategory() {
+		// category if statements. Basically tells user if they or Underweight, Normal weight
+		// Overweight or Obese
 		if(bmi <= 18.5) {cat = "Underweight";}
-		if(bmi >= 18.5 || bmi <= 24.9) {cat = "Normal weight ";}
-		if(bmi >= 25 || bmi <= 29.9) {cat = "Overweight";}
-		if(bmi > 30) {cat = "Obesity";}
+		else if(bmi >= 18.5 && bmi <= 24.9) {cat = "Normal weight ";}
+		else if(bmi >= 25 && bmi <= 29.9) {cat = "Overweight";}
+		else { cat = "Obesity";}
 
 	}
 
 	public void displayBmi() {
+		// display the print statements for bmi and bmi category
 		System.out.println("Your BMI is " + bmi);
 		System.out.println("Your category is " + cat);
 
@@ -110,7 +168,7 @@ public class BMICalculator {
 		return height;
 
 	}
-
+	// method that passes the user input and sets the height and weight
 	private void setHeight(int h) {
 		height = h;
 	}
@@ -118,7 +176,7 @@ public class BMICalculator {
 	private void setWeight(int w) {
 		weight = w;
 	}
-
+	//
 	public float getBmi() {
 		return bmi;
 
@@ -127,5 +185,18 @@ public class BMICalculator {
 	public String getBmiCategory() {
 		return cat; 
 	}
+
+	public float getBmiMetric() {
+
+		float bmiMetric = (703 * getWeight())/(getHeight()*getHeight());
+		return bmiMetric;
+	}
+
+	public float getBmiImperial() {
+
+		float bmiImperial = (getWeight())/(getHeight()*getHeight());
+		return bmiImperial;
+	}
+
 
 }
